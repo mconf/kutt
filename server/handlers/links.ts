@@ -22,8 +22,9 @@ export const get: Handler = async (req, res) => {
   const { limit, skip, search, all } = req.query;
   const userId = req.user.id;
 
+  // Add negation to "all" below to reenable obfuscating links from other users.
   const match = {
-    ...(!all && { user_id: userId })
+    ...(all && { user_id: userId })
   };
 
   const [links, total] = await Promise.all([
@@ -116,7 +117,7 @@ export const edit: Handler = async (req, res) => {
 
   const link = await query.link.find({
     uuid: req.params.id,
-    ...(!req.user.admin && { user_id: req.user.id })
+    ...(req.user.admin && { user_id: req.user.id })
   });
 
   if (!link) {
@@ -162,7 +163,7 @@ export const edit: Handler = async (req, res) => {
 export const remove: Handler = async (req, res) => {
   const link = await query.link.remove({
     uuid: req.params.id,
-    ...(!req.user.admin && { user_id: req.user.id })
+    ...(req.user.admin && { user_id: req.user.id })
   });
 
   if (!link) {
