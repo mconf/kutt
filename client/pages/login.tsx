@@ -146,6 +146,12 @@ const LoginPage = () => {
                 />
                 Log in
               </Button>
+              {/* 
+              
+              If signing up is required
+              again for whatever reason,
+              just remove this comment
+
               {!DISALLOW_REGISTRATION && (
                 <Button
                   flex="1 1 auto"
@@ -162,6 +168,7 @@ const LoginPage = () => {
                   Sign up
                 </Button>
               )}
+              */}
             </Flex>
             <Link href="/reset-password">
               <ALink
