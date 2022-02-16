@@ -18,6 +18,11 @@ import Text, { H2 } from "../components/Text";
 import ALink from "../components/ALink";
 import Icon from "../components/Icon";
 
+
+import Login from "../components/GAuth"
+import Logout from "../components/GLogout"
+
+
 const LoginForm = styled(Flex).attrs({
   as: "form",
   flexDirection: "column"
@@ -163,6 +168,8 @@ const LoginPage = () => {
                 </Button>
               )}
             </Flex>
+            <Login/>
+            <Logout/>
             <Link href="/reset-password">
               <ALink
                 href="/reset-password"
