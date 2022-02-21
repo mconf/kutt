@@ -1,5 +1,5 @@
 import { useFormState } from "react-use-form-state";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Flex } from "reflexbox/styled-components";
 import emailValidator from "email-validator";
 import styled from "styled-components";
@@ -22,7 +22,6 @@ import Icon from "../components/Icon";
 import Login from "../components/GAuth"
 import Logout from "../components/GLogout"
 
-
 const LoginForm = styled(Flex).attrs({
   as: "form",
   flexDirection: "column"
@@ -39,13 +38,33 @@ const Email = styled.span`
 const LoginPage = () => {
   const { isAuthenticated } = useStoreState(s => s.auth);
   const login = useStoreActions(s => s.auth.login);
+  const gLogin = useStoreActions(s => s.auth.gLogin);
   const [error, setError] = useState("");
   const [verifying, setVerifying] = useState(false);
-  const [loading, setLoading] = useState({ login: false, signup: false });
+  const [loading, setLoading] = useState({ login: false, signup: false, gLogin: false });
   const [formState, { email, password, label }] = useFormState<{
     email: string;
     password: string;
   }>(null, { withIds: true });
+
+  const [google, setGoogle] = useState();
+
+  const callback = useCallback((profile) => {
+    setGoogle(profile);
+    console.log("State outside child: " + profile)
+    console.log(profile)
+
+
+    if(profile.email && profile.googleId){
+      setLoading(s => ({ ...s, gLogin: true }));
+        try {
+          gLogin({email: profile.email, password: profile.googleId})
+          Router.push("/");
+        } catch (error) {
+          setError(error.response.data.error);
+        }
+    }
+  }, []);
 
   useEffect(() => {
     if (isAuthenticated) Router.push("/");
@@ -92,7 +111,7 @@ const LoginPage = () => {
         }
       }
 
-      setLoading({ login: false, signup: false });
+      setLoading({ login: false, signup: false, gLogin: false });
     };
   }
 
@@ -168,7 +187,9 @@ const LoginPage = () => {
                 </Button>
               )}
             </Flex>
-            <Login/>
+            <Login
+            parentCallback={callback}
+            />
             <Logout/>
             <Link href="/reset-password">
               <ALink

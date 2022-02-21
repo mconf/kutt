@@ -2,19 +2,28 @@ import React from 'react';
 import { GoogleLogin } from 'react-google-login'
 import { refreshTokenSetup } from './utils/refreshToken'
 
+import { useCallback, useState } from "react";
+
+
 const clientId = '599605619584-shbhg17403n9gc49afij6ljb92qn8omk.apps.googleusercontent.com';
 
 
-function Login() {
+function Login({parentCallback}) {
+
     const onSuccess = (res) => {
         console.log('[Login Succes] currentUser: ', res.profileObj);
+        console.log(res)
 
         refreshTokenSetup(res)
+
+        parentCallback(res.profileObj)
     };
 
     const onFailure = (res) => {
         console.log('[Login Failed] res: ', res);
     };
+
+;
 
     return (
         <div>
