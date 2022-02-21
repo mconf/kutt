@@ -15,6 +15,7 @@ export interface Auth {
   add: Action<Auth, TokenPayload>;
   logout: Action<Auth>;
   login: Thunk<Auth, { email: string; password: string }>;
+  gLogin: Thunk<Auth, { email: string; password: string }>;
   renew: Thunk<Auth>;
 }
 
@@ -40,6 +41,14 @@ export const auth: Auth = {
     cookie.set("token", token, { expires: 7 });
     const tokenPayload: TokenPayload = decode(token);
     actions.add(tokenPayload);
+  }),
+  gLogin: thunk(async (actions, payload) => {
+    const res = await axios.post(APIv2.AuthGoogle, payload)
+    const { token } = res.data;
+    cookie.set("token", token, { expires: 7 });
+    const tokenPayload: TokenPayload = decode(token);
+    actions.add(tokenPayload);
+    
   }),
   renew: thunk(async actions => {
     const res = await axios.post(APIv2.AuthRenew, null, getAxiosConfig());
