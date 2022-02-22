@@ -88,6 +88,7 @@ class AppDocument extends Document<Props> {
             async
             defer
           />
+          <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
         </Head>
         <body
           style={{

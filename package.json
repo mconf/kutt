@@ -38,6 +38,7 @@
     "@sentry/apm": "^5.21.1",
     "@sentry/node": "^5.21.1",
     "@sentry/react": "^5.21.1",
+    "@types/gapi.auth2": "0.0.56",
     "app-root-path": "^3.0.0",
     "axios": "^0.21.1",
     "babel-plugin-inline-react-svg": "^1.1.0",
