@@ -51,9 +51,6 @@ const LoginPage = () => {
 
   const callback = useCallback((profile) => {
     setGoogle(profile);
-    console.log("State outside child: " + profile)
-    console.log(profile)
-
 
     if(profile.email && profile.googleId){
       setLoading(s => ({ ...s, gLogin: true }));

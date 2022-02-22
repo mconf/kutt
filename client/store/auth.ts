@@ -6,6 +6,7 @@ import axios from "axios";
 import { TokenPayload } from "../types";
 import { API, APIv2 } from "../consts";
 import { getAxiosConfig } from "../utils";
+//import { gapi } from 'gapi-script';
 
 export interface Auth {
   domain?: string;
@@ -34,6 +35,12 @@ export const auth: Auth = {
     state.domain = null;
     state.email = null;
     state.isAdmin = false;
+    /*const auth2 = gapi.auth2.getAuthInstance();
+    if (auth2 != null) {
+      auth2.signOut().then(
+           auth2.disconnect().then(console.log('LOGOUT SUCCESSFUL'))
+       )
+    }*/
   }),
   login: thunk(async (actions, payload) => {
     const res = await axios.post(APIv2.AuthLogin, payload);
