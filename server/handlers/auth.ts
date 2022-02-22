@@ -116,9 +116,6 @@ export const googleLogin: Handler = async (req, res, next) => {
   const password = await bcrypt.hash(req.body.password, salt);
   let user = await query.user.find({ email: req.body.email });
 
-  console.log(user?.verified)
-
-
   if (user) {
     if (!user?.verified) {
       await mail.verification(user);  
