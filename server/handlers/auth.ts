@@ -116,12 +116,16 @@ export const googleLogin: Handler = async (req, res, next) => {
   const password = await bcrypt.hash(req.body.password, salt);
   let user = await query.user.find({ email: req.body.email });
 
+  console.log(user?.verified)
+
+
   if (user) {
-    if (user?.verified) {
+    if (!user?.verified) {
       await mail.verification(user);  
       return res.status(201).send({ message: "Verification email has been sent." });
     }
   } else {
+
     await query.user.add(
       { email: req.body.email, password },
       req.user
