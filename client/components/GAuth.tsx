@@ -31,7 +31,7 @@ function Login({ parentCallback }) {
                 cookiePolicy={'single_host_origin'}
                 render={renderProps => (
                     <GoogleButton
-                        style={{ width: "100%", marginTop: 50 }}
+                        style={{ width: "100%", marginTop: 30 }}
                         onClick={renderProps.onClick}
                         disabled={renderProps.disabled}
                     >
