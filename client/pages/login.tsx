@@ -17,10 +17,10 @@ import { Button } from "../components/Button";
 import Text, { H2 } from "../components/Text";
 import ALink from "../components/ALink";
 import Icon from "../components/Icon";
-
-
+import getConfig from "next/config";
 import Login from "../components/GAuth"
-import Logout from "../components/GLogout"
+
+const { publicRuntimeConfig } = getConfig();
 
 const LoginForm = styled(Flex).attrs({
   as: "form",
@@ -187,7 +187,6 @@ const LoginPage = () => {
             <Login
             parentCallback={callback}
             />
-            <Logout/>
             <Link href="/reset-password">
               <ALink
                 href="/reset-password"

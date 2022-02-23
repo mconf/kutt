@@ -1,17 +1,20 @@
 import React from 'react';
 import { GoogleLogout } from 'react-google-login'
+import getConfig from "next/config";
 
-const clientId = '599605619584-shbhg17403n9gc49afij6ljb92qn8omk.apps.googleusercontent.com';
+const { publicRuntimeConfig } = getConfig();
+
 
 function Logout() {
     const onSuccess = () => {
-        alert('Logout made successfully!')
+        //Can be enabled to showcase if a google logout has been made
+        //alert('Logout made successfully!')
     };
 
     return (
         <div>
             <GoogleLogout
-            clientId={clientId}
+            clientId={publicRuntimeConfig.GOOGLE_CLIENT_ID}
             buttonText="Logout"
             onLogoutSuccess={onSuccess}
             />
