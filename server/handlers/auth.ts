@@ -114,26 +114,25 @@ export const admin: Handler = async (req, res, next) => {
 export const googleLogin: Handler = async (req, res, next) => {
   const salt = await bcrypt.genSalt(12);
   const password = await bcrypt.hash(req.body.password, salt);
-  let user = await query.user.find({ email: req.body.email });
+  const user = await query.user.find({ email: req.body.email });
 
   if (user) {
     if (!user?.verified) {
-      await mail.verification(user);  
-      return res.status(201).send({ message: "Verification email has been sent." });
+      await mail.verification(user);
+      return res
+        .status(201)
+        .send({ message: "Verification email has been sent." });
     }
   } else {
-
-    await query.user.add(
-      { email: req.body.email, password },
-      req.user
-    );  
-    await mail.verification(user);  
-    return res.status(201).send({ message: "Verification email has been sent." });
+    await query.user.add({ email: req.body.email, password }, req.user);
+    await mail.verification(user);
+    return res
+      .status(201)
+      .send({ message: "Verification email has been sent." });
   }
 
-  return next()
-
-}
+  return next();
+};
 
 export const signup: Handler = async (req, res) => {
   const salt = await bcrypt.genSalt(12);
@@ -251,9 +250,9 @@ export const signupAccess: Handler = (req, res, next) => {
 
 export const googleAccess: Handler = (req, res, next) => {
   if (!env.DISALLOW_REGISTRATION || !env.DISALLOW_GOOGLE) return next();
-  if (env.MAIL_ORG !== ""){
-    let org = req.body.email.split('@')[1].split('.')[0] // Splitting organization from full email
-    if(org === env.MAIL_ORG) {
+  if (env.MAIL_ORG !== "") {
+    const org = req.body.email.split("@")[1].split(".")[0]; // Splitting organization from full email
+    if (org === env.MAIL_ORG) {
       return next();
     }
   }
