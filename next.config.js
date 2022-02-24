@@ -13,5 +13,7 @@ module.exports = {
     SENTRY_PUBLIC_DSN: localEnv && localEnv.SENTRY_PUBLIC_DSN,
     MAIL_ORG: localEnv && localEnv.MAIL_ORG,
     GOOGLE_CLIENT_ID: localEnv && localEnv.GOOGLE_CLIENT_ID,
+    DISALLOW_GOOGLE: localEnv && localEnv.DISALLOW_GOOGLE,
+
   }
 };
