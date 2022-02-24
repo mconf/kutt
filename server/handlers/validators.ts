@@ -324,8 +324,10 @@ export const login = [
 ];
 
 export const google = [
-  body("password", "Password is not valid.")
-    .exists({ checkFalsy: true, checkNull: true }),
+  body("password", "Password is not valid.").exists({
+    checkFalsy: true,
+    checkNull: true
+  }),
   body("email", "Email is not valid.")
     .exists({ checkFalsy: true, checkNull: true })
     .trim()
