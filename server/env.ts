@@ -39,6 +39,7 @@ const env = cleanEnv(process.env, {
   MAIL_FROM: str({ default: "", example: "Kutt <support@kutt.it>" }),
   MAIL_PASSWORD: str(),
   MAIL_ORG: str({ default: "" }),
+  DISALLOW_GOOGLE: bool({ default: false }),
   GOOGLE_CLIENT_ID: str({ default: "" }),
   REPORT_EMAIL: str({ default: "" }),
   CONTACT_EMAIL: str({ default: "" }),

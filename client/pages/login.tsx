@@ -8,7 +8,7 @@ import Link from "next/link";
 import axios from "axios";
 
 import { useStoreState, useStoreActions } from "../store";
-import { APIv2, DISALLOW_REGISTRATION } from "../consts";
+import { APIv2, DISALLOW_REGISTRATION, DISALLOW_GOOGLE } from "../consts";
 import { ColCenterV } from "../components/Layout";
 import AppWrapper from "../components/AppWrapper";
 import { TextInput } from "../components/Input";
@@ -50,16 +50,18 @@ const LoginPage = () => {
   const [google, setGoogle] = useState();
 
   const callback = useCallback((profile) => {
-    setGoogle(profile);
+    if (!DISALLOW_GOOGLE) {
+      setGoogle(profile);
 
-    if(profile.email && profile.googleId){
-      setLoading(s => ({ ...s, gLogin: true }));
+      if (profile.email && profile.googleId) {
+        setLoading(s => ({ ...s, gLogin: true }));
         try {
-          gLogin({email: profile.email, password: profile.googleId})
+          gLogin({ email: profile.email, password: profile.googleId })
           Router.push("/");
         } catch (error) {
           setError(error.response.data.error);
         }
+      }
     }
   }, []);
 
@@ -184,9 +186,11 @@ const LoginPage = () => {
                 </Button>
               )}
             </Flex>
+            {!DISALLOW_GOOGLE && (
             <Login
-            parentCallback={callback}
+              parentCallback={callback}
             />
+            )}
             <Link href="/reset-password">
               <ALink
                 href="/reset-password"
