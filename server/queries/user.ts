@@ -31,12 +31,14 @@ export const find = async (match: Partial<User>) => {
 interface Add {
   email: string;
   password: string;
+  verified: boolean;
 }
 
 export const add = async (params: Add, user?: User) => {
   const data = {
     email: params.email,
     password: params.password,
+    verified: params.verified,
     verification_token: uuid(),
     verification_expires: addMinutes(new Date(), 60).toISOString()
   };

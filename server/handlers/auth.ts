@@ -28,10 +28,10 @@ const authenticate = (
         throw new CustomError(error, 401);
       }
 
-      if (user && isStrict && !user.verified) {
+      if (user && isStrict && !user.verified && !env.DISALLOW_VERIFICATION) {
         throw new CustomError(
           "Your email address is not verified. " +
-            "Click on signup to get the verification link again.",
+          "Click on signup to get the verification link again.",
           400
         );
       }
@@ -118,17 +118,25 @@ export const googleLogin: Handler = async (req, res, next) => {
 
   if (user) {
     if (!user?.verified) {
+      if (env.DISALLOW_VERIFICATION) {
+        await query.user.update({ email: req.body.email }, { verified: true })
+      } else {
+        await mail.verification(user);
+        return res
+          .status(201)
+          .send({ message: "Verification email has been sent." });
+      }
+    }
+  } else {
+    if (env.DISALLOW_VERIFICATION) {
+      await query.user.add({ email: req.body.email, password, verified: true }, req.user);
+    } else {
+      await query.user.add({ email: req.body.email, password, verified: false }, req.user);
       await mail.verification(user);
       return res
         .status(201)
         .send({ message: "Verification email has been sent." });
     }
-  } else {
-    await query.user.add({ email: req.body.email, password }, req.user);
-    await mail.verification(user);
-    return res
-      .status(201)
-      .send({ message: "Verification email has been sent." });
   }
 
   return next();
@@ -137,15 +145,24 @@ export const googleLogin: Handler = async (req, res, next) => {
 export const signup: Handler = async (req, res) => {
   const salt = await bcrypt.genSalt(12);
   const password = await bcrypt.hash(req.body.password, salt);
+  let user;
 
-  const user = await query.user.add(
-    { email: req.body.email, password },
-    req.user
-  );
+  if (env.DISALLOW_VERIFICATION) {
+    user = await query.user.add(
+      { email: req.body.email, password, verified: true },
+      req.user
+    );
+    return res.status(201).send({ message: "Registration completed." });
 
-  await mail.verification(user);
+  } else {
+    user = await query.user.add(
+      { email: req.body.email, password, verified: false },
+      req.user
+    );
+    await mail.verification(user);
+    return res.status(201).send({ message: "Verification email has been sent." });
+  }
 
-  return res.status(201).send({ message: "Verification email has been sent." });
 };
 
 export const token: Handler = async (req, res) => {
