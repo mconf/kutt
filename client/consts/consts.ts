@@ -11,6 +11,9 @@ export const DISALLOW_REGISTRATION =
 export const DISALLOW_GOOGLE =
   publicRuntimeConfig.DISALLOW_GOOGLE === "true";
 
+export const DISALLOW_VERIFICATION =
+  publicRuntimeConfig.DISALLOW_VERIFICATION === "true";
+
 export enum API {
   BAN_LINK = "/api/url/admin/ban",
   STATS = "/api/url/stats"

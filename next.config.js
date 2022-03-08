@@ -14,6 +14,7 @@ module.exports = {
     MAIL_ORG: localEnv && localEnv.MAIL_ORG,
     GOOGLE_CLIENT_ID: localEnv && localEnv.GOOGLE_CLIENT_ID,
     DISALLOW_GOOGLE: localEnv && localEnv.DISALLOW_GOOGLE,
+    DISALLOW_VERIFICATION: localEnv && localEnv.DISALLOW_VERIFICATION,
 
   }
 };

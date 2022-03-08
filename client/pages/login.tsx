@@ -8,7 +8,7 @@ import Link from "next/link";
 import axios from "axios";
 
 import { useStoreState, useStoreActions } from "../store";
-import { APIv2, DISALLOW_REGISTRATION, DISALLOW_GOOGLE } from "../consts";
+import { APIv2, DISALLOW_REGISTRATION, DISALLOW_GOOGLE, DISALLOW_VERIFICATION } from "../consts";
 import { ColCenterV } from "../components/Layout";
 import AppWrapper from "../components/AppWrapper";
 import { TextInput } from "../components/Input";
@@ -104,7 +104,12 @@ const LoginPage = () => {
         setLoading(s => ({ ...s, signup: true }));
         try {
           await axios.post(APIv2.AuthSignup, { email, password });
-          setVerifying(true);
+          if (DISALLOW_VERIFICATION) {
+            await login(formState.values);
+            Router.push("/");
+          } else {
+            setVerifying(true);
+          }
         } catch (error) {
           setError(error.response.data.error);
         }
