@@ -11,7 +11,7 @@ function Login({ parentCallback }) {
 
     const onSuccess = (res) => {
         //Sees profile object that google returns
-        //console.log('[Login Succes] currentUser: ', res.profileObj);
+        //console.log('[Login Success] currentUser: ', res.profileObj);
 
         refreshTokenSetup(res) //Refreshes tokens so it doesnt auto-logout
         parentCallback(res.profileObj) //Returns profile obj
