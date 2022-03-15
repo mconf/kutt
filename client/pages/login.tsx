@@ -18,7 +18,7 @@ import Text, { H2 } from "../components/Text";
 import ALink from "../components/ALink";
 import Icon from "../components/Icon";
 import getConfig from "next/config";
-import Login from "../components/GAuth"
+import Login from "../components/GLogin"
 
 const { publicRuntimeConfig } = getConfig();
 
