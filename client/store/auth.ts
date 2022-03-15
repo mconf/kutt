@@ -59,7 +59,6 @@ export const auth: Auth = {
     cookie.set("token", token, { expires: 7 });
     const tokenPayload: TokenPayload = decode(token);
     actions.add(tokenPayload);
-
   }),
   renew: thunk(async actions => {
     const res = await axios.post(APIv2.AuthRenew, null, getAxiosConfig());
