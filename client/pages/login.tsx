@@ -193,7 +193,7 @@ const LoginPage = () => {
             </Flex>
             {!DISALLOW_GOOGLE && (
             <Login
-              parentCallback={callback}
+              onSuccess={callback}
             />
             )}
             <Link href="/reset-password">
