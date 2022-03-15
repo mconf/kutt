@@ -7,11 +7,11 @@ import getConfig from "next/config";
 
 const { publicRuntimeConfig } = getConfig();
 
-function GLogin({ parentCallback }) {
+function GLogin(props) {
 
     const onSuccess = (res) => {
         refreshTokenSetup(res) //Refreshes tokens so it doesnt auto-logout
-        parentCallback(res.profileObj) //Returns profile obj
+        props.onSuccess(res.profileObj)//Returns profile obj
     };
 
     const onFailure = (res) => {
