@@ -7,12 +7,9 @@ import getConfig from "next/config";
 
 const { publicRuntimeConfig } = getConfig();
 
-function Login({ parentCallback }) {
+function GLogin({ parentCallback }) {
 
     const onSuccess = (res) => {
-        //Sees profile object that google returns
-        //console.log('[Login Success] currentUser: ', res.profileObj);
-
         refreshTokenSetup(res) //Refreshes tokens so it doesnt auto-logout
         parentCallback(res.profileObj) //Returns profile obj
     };
@@ -44,4 +41,4 @@ function Login({ parentCallback }) {
     )
 }
 
-export default Login
+export default GLogin

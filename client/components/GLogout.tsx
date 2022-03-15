@@ -5,7 +5,7 @@ import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
 
 
-function Logout() {
+function GLogout() {
     const onSuccess = () => {
         //Can be enabled to showcase if a google logout has been made
         //alert('Logout made successfully!')
@@ -22,4 +22,4 @@ function Logout() {
     )
 }
 
-export default Logout
+export default GLogout
