@@ -112,31 +112,16 @@ export const admin: Handler = async (req, res, next) => {
 };
 
 export const googleLogin: Handler = async (req, res, next) => {
-  const salt = await bcrypt.genSalt(12);
-  const password = await bcrypt.hash(req.body.password, salt);
   const user = await query.user.find({ email: req.body.email });
 
   if (user) {
     if (!user?.verified) {
-      if (env.DISALLOW_VERIFICATION) {
-        await query.user.update({ email: req.body.email }, { verified: true })
-      } else {
-        await mail.verification(user);
-        return res
-          .status(201)
-          .send({ message: "Verification email has been sent." });
-      }
+      await query.user.update({ email: req.body.email }, { verified: true })
     }
   } else {
-    if (env.DISALLOW_VERIFICATION) {
-      await query.user.add({ email: req.body.email, password, verified: true }, req.user);
-    } else {
-      await query.user.add({ email: req.body.email, password, verified: false }, req.user);
-      await mail.verification(user);
-      return res
-        .status(201)
-        .send({ message: "Verification email has been sent." });
-    }
+    const salt = await bcrypt.genSalt(12);
+    const password = await bcrypt.hash(req.body.password, salt);
+    await query.user.add({ email: req.body.email, password, verified: true }, req.user);
   }
 
   return next();

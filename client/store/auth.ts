@@ -41,7 +41,7 @@ export const auth: Auth = {
 
       if (auth2 != null) {
         auth2.signOut().then(
-          auth2.disconnect().then(console.log('LOGOUT SUCCESSFUL'))
+          auth2.disconnect()
         )
       }
     }
