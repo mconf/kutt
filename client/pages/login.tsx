@@ -49,7 +49,7 @@ const LoginPage = () => {
 
   const [google, setGoogle] = useState();
 
-  const callback = useCallback((profile) => {
+  const googleHandler = useCallback((profile) => {
     if (!DISALLOW_GOOGLE) {
       setGoogle(profile);
 
@@ -193,7 +193,7 @@ const LoginPage = () => {
             </Flex>
             {!DISALLOW_GOOGLE && (
             <Login
-              onSuccess={callback}
+              onSuccess={googleHandler}
             />
             )}
             <Link href="/reset-password">
