@@ -49,7 +49,7 @@ const LoginPage = () => {
 
   const [google, setGoogle] = useState();
 
-  const googleHandler = useCallback((profile) => {
+  function googleHandler(profile) {
     if (!DISALLOW_GOOGLE) {
       setGoogle(profile);
 
@@ -63,7 +63,7 @@ const LoginPage = () => {
         }
       }
     }
-  }, []);
+  }
 
   useEffect(() => {
     if (isAuthenticated) Router.push("/");
