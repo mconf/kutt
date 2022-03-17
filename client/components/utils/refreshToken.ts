@@ -7,7 +7,7 @@ export const refreshTokenSetup = (res) => {
         refreshTiming = (newAuthRes.expires_in || 3600 - 5 * 60) * 1000;
 
         setTimeout(refreshToken, refreshTiming)
-
+        
     };
     
     setTimeout(refreshToken, refreshTiming)
