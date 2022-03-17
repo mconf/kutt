@@ -18,9 +18,7 @@ import Text, { H2 } from "../components/Text";
 import ALink from "../components/ALink";
 import Icon from "../components/Icon";
 import getConfig from "next/config";
-import Login from "../components/GLogin"
-
-const { publicRuntimeConfig } = getConfig();
+import GLogin from "../components/GLogin"
 
 const LoginForm = styled(Flex).attrs({
   as: "form",
@@ -49,7 +47,7 @@ const LoginPage = () => {
 
   const [google, setGoogle] = useState();
 
-  function googleHandler(profile) {
+  const googleHandler = profile => {
     if (!DISALLOW_GOOGLE) {
       setGoogle(profile);
 
@@ -192,7 +190,7 @@ const LoginPage = () => {
               )}
             </Flex>
             {!DISALLOW_GOOGLE && (
-            <Login
+            <GLogin
               onSuccess={googleHandler}
             />
             )}
