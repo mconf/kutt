@@ -1,5 +1,5 @@
 import { useFormState } from "react-use-form-state";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { Flex } from "reflexbox/styled-components";
 import emailValidator from "email-validator";
 import styled from "styled-components";
