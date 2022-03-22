@@ -31,7 +31,7 @@ const authenticate = (
       if (user && isStrict && !user.verified && !env.DISALLOW_VERIFICATION) {
         throw new CustomError(
           "Your email address is not verified. " +
-          "Click on signup to get the verification link again.",
+            "Click on signup to get the verification link again.",
           400
         );
       }
@@ -116,12 +116,15 @@ export const googleLogin: Handler = async (req, res, next) => {
 
   if (user) {
     if (!user?.verified) {
-      await query.user.update({ email: req.body.email }, { verified: true })
+      await query.user.update({ email: req.body.email }, { verified: true });
     }
   } else {
     const salt = await bcrypt.genSalt(12);
     const password = await bcrypt.hash(req.body.password, salt);
-    await query.user.add({ email: req.body.email, password, verified: true }, req.user);
+    await query.user.add(
+      { email: req.body.email, password, verified: true },
+      req.user
+    );
   }
 
   return next();
@@ -138,16 +141,16 @@ export const signup: Handler = async (req, res) => {
       req.user
     );
     return res.status(201).send({ message: "Registration completed." });
-
   } else {
     user = await query.user.add(
       { email: req.body.email, password, verified: false },
       req.user
     );
     await mail.verification(user);
-    return res.status(201).send({ message: "Verification email has been sent." });
+    return res
+      .status(201)
+      .send({ message: "Verification email has been sent." });
   }
-
 };
 
 export const token: Handler = async (req, res) => {
