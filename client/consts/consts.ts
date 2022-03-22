@@ -8,6 +8,12 @@ export const DISALLOW_ANONYMOUS_LINKS =
 export const DISALLOW_REGISTRATION =
   publicRuntimeConfig.DISALLOW_REGISTRATION === "true";
 
+export const DISALLOW_GOOGLE =
+  publicRuntimeConfig.DISALLOW_GOOGLE === "true";
+
+export const DISALLOW_VERIFICATION =
+  publicRuntimeConfig.DISALLOW_VERIFICATION === "true";
+
 export enum API {
   BAN_LINK = "/api/url/admin/ban",
   STATS = "/api/url/stats"
@@ -16,6 +22,7 @@ export enum API {
 export enum APIv2 {
   AuthLogin = "/api/v2/auth/login",
   AuthSignup = "/api/v2/auth/signup",
+  AuthGoogle = "/api/v2/auth/googleLogin",
   AuthRenew = "/api/v2/auth/renew",
   AuthResetPassword = "/api/v2/auth/reset-password",
   AuthChangePassword = "/api/v2/auth/change-password",

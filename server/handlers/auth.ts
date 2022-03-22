@@ -28,7 +28,7 @@ const authenticate = (
         throw new CustomError(error, 401);
       }
 
-      if (user && isStrict && !user.verified) {
+      if (user && isStrict && !user.verified && !env.DISALLOW_VERIFICATION) {
         throw new CustomError(
           "Your email address is not verified. " +
             "Click on signup to get the verification link again.",
@@ -111,18 +111,46 @@ export const admin: Handler = async (req, res, next) => {
   throw new CustomError("Unauthorized", 401);
 };
 
+export const googleLogin: Handler = async (req, res, next) => {
+  const user = await query.user.find({ email: req.body.email });
+
+  if (user) {
+    if (!user?.verified) {
+      await query.user.update({ email: req.body.email }, { verified: true });
+    }
+  } else {
+    const salt = await bcrypt.genSalt(12);
+    const password = await bcrypt.hash(req.body.password, salt);
+    await query.user.add(
+      { email: req.body.email, password, verified: true },
+      req.user
+    );
+  }
+
+  return next();
+};
+
 export const signup: Handler = async (req, res) => {
   const salt = await bcrypt.genSalt(12);
   const password = await bcrypt.hash(req.body.password, salt);
+  let user;
 
-  const user = await query.user.add(
-    { email: req.body.email, password },
-    req.user
-  );
-
-  await mail.verification(user);
-
-  return res.status(201).send({ message: "Verification email has been sent." });
+  if (env.DISALLOW_VERIFICATION) {
+    user = await query.user.add(
+      { email: req.body.email, password, verified: true },
+      req.user
+    );
+    return res.status(201).send({ message: "Registration completed." });
+  } else {
+    user = await query.user.add(
+      { email: req.body.email, password, verified: false },
+      req.user
+    );
+    await mail.verification(user);
+    return res
+      .status(201)
+      .send({ message: "Verification email has been sent." });
+  }
 };
 
 export const token: Handler = async (req, res) => {
@@ -222,6 +250,17 @@ export const resetPassword: Handler = async (req, res, next) => {
 
 export const signupAccess: Handler = (req, res, next) => {
   if (!env.DISALLOW_REGISTRATION) return next();
+  return res.status(403).send({ message: "Registration is not allowed." });
+};
+
+export const googleAccess: Handler = (req, res, next) => {
+  if (!env.DISALLOW_REGISTRATION || !env.DISALLOW_GOOGLE) return next();
+  if (env.MAIL_ORG !== "") {
+    const org = req.body.email.split("@")[1].split(".")[0]; // Splitting organization from full email
+    if (org === env.MAIL_ORG) {
+      return next();
+    }
+  }
   return res.status(403).send({ message: "Registration is not allowed." });
 };
 

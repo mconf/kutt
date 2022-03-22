@@ -11,5 +11,10 @@ module.exports = {
     DISALLOW_ANONYMOUS_LINKS: localEnv && localEnv.DISALLOW_ANONYMOUS_LINKS,
     DISALLOW_REGISTRATION: localEnv && localEnv.DISALLOW_REGISTRATION,
     SENTRY_PUBLIC_DSN: localEnv && localEnv.SENTRY_PUBLIC_DSN,
+    MAIL_ORG: localEnv && localEnv.MAIL_ORG,
+    GOOGLE_CLIENT_ID: localEnv && localEnv.GOOGLE_CLIENT_ID,
+    DISALLOW_GOOGLE: localEnv && localEnv.DISALLOW_GOOGLE,
+    DISALLOW_VERIFICATION: localEnv && localEnv.DISALLOW_VERIFICATION,
+
   }
 };

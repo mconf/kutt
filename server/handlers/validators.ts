@@ -323,6 +323,19 @@ export const login = [
     .withMessage("Email length must be max 255.")
 ];
 
+export const google = [
+  body("password", "Password is not valid.").exists({
+    checkFalsy: true,
+    checkNull: true
+  }),
+  body("email", "Email is not valid.")
+    .exists({ checkFalsy: true, checkNull: true })
+    .trim()
+    .isEmail()
+    .isLength({ min: 0, max: 255 })
+    .withMessage("Email length must be max 255.")
+];
+
 export const changePassword = [
   body("password", "Password is not valid.")
     .exists({ checkFalsy: true, checkNull: true })

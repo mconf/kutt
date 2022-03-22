@@ -1,10 +1,11 @@
 import { action, Action, thunk, Thunk, computed, Computed } from "easy-peasy";
+
 import decode from "jwt-decode";
 import cookie from "js-cookie";
 import axios from "axios";
 
 import { TokenPayload } from "../types";
-import { API, APIv2 } from "../consts";
+import { API, APIv2, DISALLOW_GOOGLE } from "../consts";
 import { getAxiosConfig } from "../utils";
 
 export interface Auth {
@@ -15,8 +16,10 @@ export interface Auth {
   add: Action<Auth, TokenPayload>;
   logout: Action<Auth>;
   login: Thunk<Auth, { email: string; password: string }>;
+  gLogin: Thunk<Auth, { email: string; password: string }>;
   renew: Thunk<Auth>;
 }
+
 
 export const auth: Auth = {
   domain: null,
@@ -33,9 +36,25 @@ export const auth: Auth = {
     state.domain = null;
     state.email = null;
     state.isAdmin = false;
+    if (!DISALLOW_GOOGLE) {
+      const auth2 = window.gapi.auth2.getAuthInstance();
+
+      if (auth2 != null) {
+        auth2.signOut().then(
+          auth2.disconnect()
+        )
+      }
+    }
   }),
   login: thunk(async (actions, payload) => {
     const res = await axios.post(APIv2.AuthLogin, payload);
+    const { token } = res.data;
+    cookie.set("token", token, { expires: 7 });
+    const tokenPayload: TokenPayload = decode(token);
+    actions.add(tokenPayload);
+  }),
+  gLogin: thunk(async (actions, payload) => {
+    const res = await axios.post(APIv2.AuthGoogle, payload)
     const { token } = res.data;
     cookie.set("token", token, { expires: 7 });
     const tokenPayload: TokenPayload = decode(token);

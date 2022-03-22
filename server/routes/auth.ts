@@ -23,6 +23,16 @@ router.post(
   asyncHandler(auth.signup)
 );
 
+router.post(
+  "/googleLogin",
+  auth.googleAccess,
+  validators.google,
+  asyncHandler(helpers.verify),
+  asyncHandler(auth.googleLogin),
+  asyncHandler(auth.local),
+  asyncHandler(auth.token)
+);
+
 router.post("/renew", asyncHandler(auth.jwt), asyncHandler(auth.token));
 
 router.post(
