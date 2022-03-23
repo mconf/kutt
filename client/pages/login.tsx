@@ -8,7 +8,12 @@ import Link from "next/link";
 import axios from "axios";
 
 import { useStoreState, useStoreActions } from "../store";
-import { APIv2, DISALLOW_REGISTRATION, DISALLOW_GOOGLE, DISALLOW_VERIFICATION } from "../consts";
+import {
+  APIv2,
+  DISALLOW_REGISTRATION,
+  DISALLOW_GOOGLE,
+  DISALLOW_VERIFICATION
+} from "../consts";
 import { ColCenterV } from "../components/Layout";
 import AppWrapper from "../components/AppWrapper";
 import { TextInput } from "../components/Input";
@@ -18,7 +23,7 @@ import Text, { H2 } from "../components/Text";
 import ALink from "../components/ALink";
 import Icon from "../components/Icon";
 import getConfig from "next/config";
-import GLogin from "../components/GLogin"
+import GLogin from "../components/GLogin";
 
 const LoginForm = styled(Flex).attrs({
   as: "form",
@@ -39,29 +44,29 @@ const LoginPage = () => {
   const gLogin = useStoreActions(s => s.auth.gLogin);
   const [error, setError] = useState("");
   const [verifying, setVerifying] = useState(false);
-  const [loading, setLoading] = useState({ login: false, signup: false, gLogin: false });
+  const [loading, setLoading] = useState({
+    login: false,
+    signup: false,
+    gLogin: false
+  });
   const [formState, { email, password, label }] = useFormState<{
     email: string;
     password: string;
   }>(null, { withIds: true });
 
-  const [google, setGoogle] = useState();
-
-  const googleHandler = profile => {
+  const googleHandler = async profile => {
     if (!DISALLOW_GOOGLE) {
-      setGoogle(profile);
-
       if (profile.email && profile.googleId) {
         setLoading(s => ({ ...s, gLogin: true }));
         try {
-          gLogin({ email: profile.email, password: profile.googleId })
+          gLogin({ email: profile.email, password: profile.googleId });
           Router.push("/");
         } catch (error) {
           setError(error.response.data.error);
         }
       }
     }
-  }
+  };
 
   useEffect(() => {
     if (isAuthenticated) Router.push("/");
@@ -189,11 +194,7 @@ const LoginPage = () => {
                 </Button>
               )}
             </Flex>
-            {!DISALLOW_GOOGLE && (
-            <GLogin
-              onSuccess={googleHandler}
-            />
-            )}
+            {!DISALLOW_GOOGLE && <GLogin onSuccess={googleHandler} />}
             <Link href="/reset-password">
               <ALink
                 href="/reset-password"
