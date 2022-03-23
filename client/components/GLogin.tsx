@@ -31,7 +31,6 @@ function GLogin(props) {
             Sign in with Google
           </GoogleButton>
         )}
-        isSignedIn={true}
       />
     </div>
   );
