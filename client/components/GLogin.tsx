@@ -1,14 +1,12 @@
 import React from "react";
 import { GoogleLogin } from "react-google-login";
 import GoogleButton from "react-google-button";
-import { refreshTokenSetup } from "./utils/refreshToken";
 import getConfig from "next/config";
 
 const { publicRuntimeConfig } = getConfig();
 
 function GLogin(props) {
   const onSuccess = res => {
-    refreshTokenSetup(res); //Refreshes tokens so it doesnt auto-logout
     props.onSuccess(res.profileObj); //Returns profile obj
   };
 
