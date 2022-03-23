@@ -10,17 +10,13 @@ function GLogin(props) {
     props.onSuccess(res.profileObj); //Returns profile obj
   };
 
-  const onFailure = res => {
-    console.log("[Login Failed] res: ", res); // Error message
-  };
-
   return (
     <div>
       <GoogleLogin
         clientId={publicRuntimeConfig.GOOGLE_CLIENT_ID}
         buttonText="Login"
         onSuccess={onSuccess}
-        onFailure={onFailure}
+        onFailure={props.onFailure}
         cookiePolicy={"single_host_origin"}
         render={renderProps => (
           <GoogleButton
