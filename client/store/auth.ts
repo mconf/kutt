@@ -20,7 +20,6 @@ export interface Auth {
   renew: Thunk<Auth>;
 }
 
-
 export const auth: Auth = {
   domain: null,
   email: null,
@@ -36,13 +35,11 @@ export const auth: Auth = {
     state.domain = null;
     state.email = null;
     state.isAdmin = false;
-    if (!DISALLOW_GOOGLE) {
+    if (!DISALLOW_GOOGLE && window.gapi.auth2) {
       const auth2 = window.gapi.auth2.getAuthInstance();
 
       if (auth2 != null) {
-        auth2.signOut().then(
-          auth2.disconnect()
-        )
+        auth2.signOut().then(auth2.disconnect());
       }
     }
   }),
@@ -54,7 +51,7 @@ export const auth: Auth = {
     actions.add(tokenPayload);
   }),
   gLogin: thunk(async (actions, payload) => {
-    const res = await axios.post(APIv2.AuthGoogle, payload)
+    const res = await axios.post(APIv2.AuthGoogle, payload);
     const { token } = res.data;
     cookie.set("token", token, { expires: 7 });
     const tokenPayload: TokenPayload = decode(token);
