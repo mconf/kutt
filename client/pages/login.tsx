@@ -59,7 +59,7 @@ const LoginPage = () => {
       if (profile.email && profile.googleId) {
         setLoading(s => ({ ...s, gLogin: true }));
         try {
-          gLogin({ email: profile.email, password: profile.googleId });
+          await gLogin({ email: profile.email, password: profile.googleId });
           Router.push("/");
         } catch (error) {
           setError(error.response.data.error);
