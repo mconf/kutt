@@ -54,7 +54,7 @@ const LoginPage = () => {
     password: string;
   }>(null, { withIds: true });
 
-  const googleHandler = async profile => {
+  const onGoogleSuccess = async profile => {
     if (!DISALLOW_GOOGLE) {
       if (profile.email && profile.googleId) {
         setLoading(s => ({ ...s, gLogin: true }));
@@ -194,7 +194,7 @@ const LoginPage = () => {
                 </Button>
               )}
             </Flex>
-            {!DISALLOW_GOOGLE && <GLogin onSuccess={googleHandler} />}
+            {!DISALLOW_GOOGLE && <GLogin onSuccess={onGoogleSuccess} />}
             <Link href="/reset-password">
               <ALink
                 href="/reset-password"
