@@ -18,7 +18,7 @@ jobs:
         node-version: 14
         
     - run: npm ci
-    - run: npm install eslint --save-dev
+    - run: npm install -g eslint
 
     - name: Lint
       run: npx run eslint . --ext .js,.jsx,.ts,.tsx
