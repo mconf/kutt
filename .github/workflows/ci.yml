@@ -1,0 +1,55 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  Lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 12
+        
+    - run: npm ci
+    - run: npm install -g eslint
+
+    - name: Lint
+      uses: stefanoeb/eslint-action@1.0.2
+
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 12
+    
+    - run: npm ci
+
+    - name: Build
+      run: npm run build
+
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 12
+    
+    - run: npm ci
+      
+    - name: Test
+      run: npm test
+      
