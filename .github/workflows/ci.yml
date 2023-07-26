@@ -8,48 +8,63 @@ on:
 
 jobs:
   Lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
+    - name: Check out Source Repository
+      uses: actions/checkout@v3
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: 12
         
-    - run: npm ci
-    - run: npm install -g eslint
+    - name: Clean Install Project
+      run: npm ci
 
-    - name: Lint
+    - name: Install ESLint
+      run: npm install -g eslint
+
+    - name: Lint with ESLint
       uses: stefanoeb/eslint-action@1.0.2
 
   Build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
+    - name: Check out Source Repository
+      uses: actions/checkout@v3
     
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: 12
     
-    - run: npm ci
+    - name: Clean Install Project
+      run: npm ci
 
     - name: Build
       run: npm run build
 
   Test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
+    - name: Check out Source Repository
+      uses: actions/checkout@v3
+
+    - name: Get Modified JavaScript Files
+      id: changed-javascript-files
+      uses: tj-actions/changed-files@v37
     
     - name: Setup Node.js
+      if: contains(steps.changed-javascript-files.outputs.modified_files, '.js')
       uses: actions/setup-node@v3
       with:
         node-version: 12
     
-    - run: npm ci
+    - name: Clean Install Project
+      if: contains(steps.changed-javascript-files.outputs.modified_files, '.js')
+      run: npm ci
       
     - name: Test
+      if: contains(steps.changed-javascript-files.outputs.modified_files, '.js')
       run: npm test
       
