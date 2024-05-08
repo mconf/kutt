@@ -29,6 +29,7 @@ jobs:
 
   Build:
     runs-on: ubuntu-20.04
+    needs: Test
     steps:
     - name: Check out Source Repository
       uses: actions/checkout@v4
@@ -46,6 +47,7 @@ jobs:
 
   Test:
     runs-on: ubuntu-20.04
+    needs: Lint
     steps:
     - name: Check out Source Repository
       uses: actions/checkout@v4
