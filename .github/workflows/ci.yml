@@ -2,68 +2,26 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [ master, develop ]
+    branches: [master, develop]
   pull_request:
-    branches: [ master, develop ]
+    branches: [master, develop]
 
 jobs:
-  Lint:
-    runs-on: ubuntu-20.04
-    steps:
-    - name: Check out Source Repository
-      uses: actions/checkout@v3
+  lint:
+    secrets: inherit
+    uses: mconf/mconf-ci-jobs/.github/workflows/lb-node-lint.yml@main
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 12
-        
-    - name: Clean Install Project
-      run: npm ci
+  test:
+    secrets: inherit
+    uses: mconf/mconf-ci-jobs/.github/workflows/lb-node-tests.yml@main
+    needs: lint
 
-    - name: Install ESLint
-      run: npm install -g eslint
+  build:
+    secrets: inherit
+    uses: mconf/mconf-ci-jobs/.github/workflows/lb-node-build.yml@main
+    needs: test
 
-    - name: Lint with ESLint
-      uses: stefanoeb/eslint-action@1.0.2
-
-  Build:
-    runs-on: ubuntu-20.04
-    steps:
-    - name: Check out Source Repository
-      uses: actions/checkout@v3
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 12
-    
-    - name: Clean Install Project
-      run: npm ci
-
-    - name: Build
-      run: npm run build
-
-  Test:
-    runs-on: ubuntu-20.04
-    steps:
-    - name: Check out Source Repository
-      uses: actions/checkout@v3
-
-    - name: Get Modified JavaScript Files
-      id: changed-javascript-files
-      uses: tj-actions/changed-files@v37
-    
-    - name: Setup Node.js
-      if: contains(steps.changed-javascript-files.outputs.modified_files, '.js')
-      uses: actions/setup-node@v3
-      with:
-        node-version: 12
-    
-    - name: Clean Install Project
-      if: contains(steps.changed-javascript-files.outputs.modified_files, '.js')
-      run: npm ci
-      
-    - name: Test
-      if: contains(steps.changed-javascript-files.outputs.modified_files, '.js')
-      run: npm test
+  scan:
+    secrets: inherit
+    uses: mconf/mconf-ci-jobs/.github/workflows/lb-scan.yml@main
+    needs: build
