@@ -2,26 +2,68 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [master, develop]
+    branches: [ master, develop ]
   pull_request:
-    branches: [master, develop]
+    branches: [ master, develop ]
 
 jobs:
-  lint:
-    secrets: inherit
-    uses: mconf/mconf-ci-jobs/.github/workflows/lb-node-lint.yml@main
+  Lint:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Check out Source Repository
+      uses: actions/checkout@v4
 
-  test:
-    secrets: inherit
-    uses: mconf/mconf-ci-jobs/.github/workflows/lb-node-tests.yml@main
-    needs: lint
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 12
+        
+    - name: Clean Install Project
+      run: npm ci
 
-  build:
-    secrets: inherit
-    uses: mconf/mconf-ci-jobs/.github/workflows/lb-node-build.yml@main
-    needs: test
+    - name: Install ESLint
+      run: npm install -g eslint
 
-  scan:
-    secrets: inherit
-    uses: mconf/mconf-ci-jobs/.github/workflows/lb-scan.yml@main
-    needs: build
+    - name: Lint with ESLint
+      uses: stefanoeb/eslint-action@1.0.2
+
+  Build:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Check out Source Repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 12
+    
+    - name: Clean Install Project
+      run: npm ci
+
+    - name: Build
+      run: npm run build
+
+  Test:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Check out Source Repository
+      uses: actions/checkout@v4
+
+    - name: Get Modified JavaScript Files
+      id: changed-javascript-files
+      uses: tj-actions/changed-files@v44
+    
+    - name: Setup Node.js
+      if: contains(steps.changed-javascript-files.outputs.modified_files, '.js')
+      uses: actions/setup-node@v4
+      with:
+        node-version: 12
+    
+    - name: Clean Install Project
+      if: contains(steps.changed-javascript-files.outputs.modified_files, '.js')
+      run: npm ci
+      
+    - name: Test
+      if: contains(steps.changed-javascript-files.outputs.modified_files, '.js')
+      run: npm test
