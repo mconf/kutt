@@ -1,6 +1,7 @@
-FROM node:12-alpine
+FROM node:22-alpine
 
-RUN apk add --update bash
+RUN apk add --no-cache bash \
+ && rm -rf /var/cache/apk/*
 
 # Setting working directory. 
 WORKDIR /usr/src/app
@@ -13,10 +14,9 @@ RUN npm install
 COPY . .
 
 # Give permission to run script
-RUN chmod +x ./wait-for-it.sh
-
-# Build files
-RUN npm run build
+RUN chmod +x ./wait-for-it.sh \
+  # Build files
+  && npm run build
 
 EXPOSE 3000
 
