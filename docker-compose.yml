@@ -2,7 +2,7 @@ version: "3"
 
 services:
   kutt:
-    image: kutt:latest
+    image: kutt/kutt
     depends_on:
       - postgres
       - redis

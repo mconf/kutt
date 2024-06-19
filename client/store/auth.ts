@@ -1,5 +1,4 @@
 import { action, Action, thunk, Thunk, computed, Computed } from "easy-peasy";
-
 import decode from "jwt-decode";
 import cookie from "js-cookie";
 import axios from "axios";
