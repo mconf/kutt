@@ -14,6 +14,7 @@ function GLogin(props) {
     <div>
       <GoogleLogin
         clientId={publicRuntimeConfig.GOOGLE_CLIENT_ID}
+        hostedDomain={publicRuntimeConfig.MAIL_ORG}
         buttonText="Login"
         onSuccess={onSuccess}
         onFailure={props.onFailure}

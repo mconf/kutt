@@ -254,13 +254,7 @@ export const signupAccess: Handler = (req, res, next) => {
 };
 
 export const googleAccess: Handler = (req, res, next) => {
-  if (!env.DISALLOW_REGISTRATION || !env.DISALLOW_GOOGLE) return next();
-  if (env.MAIL_ORG !== "") {
-    const org = req.body.email.split("@")[1].split(".")[0]; // Splitting organization from full email
-    if (org === env.MAIL_ORG) {
-      return next();
-    }
-  }
+  if (!env.DISALLOW_GOOGLE) return next();
   return res.status(403).send({ message: "Registration is not allowed." });
 };
 
