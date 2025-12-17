@@ -8,7 +8,7 @@ on:
 
 jobs:
   Lint:
-    runs-on: [self-hosted, ubuntu-22.04]
+    runs-on: [ubuntu-22.04]
     timeout-minutes: 15
     steps:
     - name: Check out Source Repository
@@ -29,7 +29,7 @@ jobs:
       uses: stefanoeb/eslint-action@1.0.2
 
   Build:
-    runs-on: [self-hosted, ubuntu-22.04]
+    runs-on: [ubuntu-22.04]
     needs: Lint
     timeout-minutes: 15
     steps:
@@ -48,7 +48,7 @@ jobs:
       run: npm run build
   
   Scan:
-    runs-on: [self-hosted, ubuntu-22.04]
+    runs-on: [ubuntu-22.04]
     needs: Build
     timeout-minutes: 30
     steps:
