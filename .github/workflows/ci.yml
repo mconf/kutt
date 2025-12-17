@@ -2,115 +2,23 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [master, develop]
+    branches: [develop, master]
   pull_request:
-    branches: [master, develop]
+    branches: [develop, master]
 
 jobs:
-  Lint:
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Check out Source Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 12
-
-      - name: Clean Install Project
-        run: npm ci
-
-      - name: Install ESLint
-        run: npm install -g eslint
-
-      - name: Lint with ESLint
-        uses: stefanoeb/eslint-action@1.0.2
-
-  Test:
-    runs-on: ubuntu-20.04
-    needs: Lint
-    steps:
-      - name: Check out Source Repository
-        uses: actions/checkout@v4
-
-      - name: Get Modified JavaScript Files
-        id: changed-javascript-files
-        uses: tj-actions/changed-files@v44
-
-      - name: Setup Node.js
-        if: contains(steps.changed-javascript-files.outputs.modified_files, '.js')
-        uses: actions/setup-node@v4
-        with:
-          node-version: 12
-
-      - name: Clean Install Project
-        if: contains(steps.changed-javascript-files.outputs.modified_files, '.js')
-        run: npm ci
-
-      - name: Test
-        if: contains(steps.changed-javascript-files.outputs.modified_files, '.js')
-        run: npm test
-
-  Build-push-scan:
-    name: Build, Push and Scan Docker
-    needs: Test
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Check out Source Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.REGISTRY_USER }}
-          password: ${{ secrets.REGISTRY_ACCESS_TOKEN }}
-
-      - name: Calculate tag
-        id: tag
-        run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-          # Replace / with - to avoid conflict
-            TAG=$(echo "${{ github.head_ref }}" | sed 's/\//-/g')
-          else
-            TAG="${{github.ref_name}}"
-          fi
-          echo "IMAGE=${{github.repository}}:$TAG" >> "$GITHUB_OUTPUT"
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ steps.tag.outputs.IMAGE }}
-
-      - name: Build and push image
-        uses: docker/build-push-action@v6
-        with:
-          push: ${{ startsWith(github.ref, 'refs/tags/') }}
-          load: true
-          tags: ${{ steps.tag.outputs.IMAGE }}
-          context: .
-          platforms: linux/amd64
-          labels: |
-            ${{ steps.meta.outputs.labels }}
-
-      - name: Generate UUID4
-        id: generate-uuid
-        run: echo "UUID=$(cat /proc/sys/kernel/random/uuid)" >> "$GITHUB_ENV"
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ steps.tag.outputs.IMAGE }}
-          ignore-unfixed: true
-          format: "json"
-          output: "/tmp/${{ env.UUID }}.json"
-          severity: "CRITICAL,HIGH"
-
-      - name: Upload Trivy results to Trivy Explorer
-        run: |
-          curl -H "Content-Type: application/json" -H "Authorization: ${{secrets.TRIVY_EXPLORER_AUTH_TOKEN}}" --data "@/tmp/${{ env.UUID }}.json" ${{secrets.TRIVY_EXPLORER_URL}}
-          echo
+  lint:
+    uses: mconf/mconf-ci-jobs/.github/workflows/lb-node-lint.yml@main
+    with:
+      node-version: "12"
+  build:
+    uses: mconf/mconf-ci-jobs/.github/workflows/lb-node-build.yml@main
+    with:
+      node-version: "12"
+    needs:
+      - lint
+  push-scan:
+    uses: mconf/mconf-ci-jobs/.github/workflows/lb-push-scan-image.yml@main
+    secrets: inherit
+    needs:
+      - build
